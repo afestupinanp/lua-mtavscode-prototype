@@ -1,0 +1,120 @@
+{
+    "meta": {
+        "description": "Initialize the meta tags. The meta.xml file presents MTA with a set of metadata, such as the resource's name, the scripts to include, and which files to precache for sending to clients among other things.",
+        "prefix": "meta",
+        "body": [
+            "<meta>",
+            "   $0",
+            "</meta>"
+        ]
+    },
+    "info": {
+        "description": "Information about this resource. The attributes inside it can be read with the getResourceInfo function.\nPlease note, the gamemodes attribute is comma separated.",
+        "prefix": "info",
+        "body": [
+            "<info author='$0' version='$1' name='$2' description='$3' type='$4' gamemodes='$5' />"
+        ]
+    },
+    "script": {
+        "description": "Source code files for this resource.",
+        "prefix": "script",
+        "body": [
+            "<script src='$0' type='$1' cache='${2:true}' validate='${3:true}' />"
+        ]
+    },
+    "map": {
+        "description": "Map files created using the MTA SA map editor.",
+        "prefix": "map",
+        "body": [
+            "<map src='$0' dimension='${1:0}' />"
+        ]
+    },
+    "file": {
+        "description": "A clientside file that will be downloaded by the user upon joining your server, these usually are image files (png, jpeg, etc), textures (txd) or others.\nPlease note, the download attribute determines whether to download it automatically (true) or download it using the downloadFile function (false).",
+        "prefix": "file",
+        "body": [
+            "<file src='$0' download='${1:true}' />"
+        ]
+    },
+    "include": {
+        "description": "Include resources that this resource will use.",
+        "prefix": "include",
+        "body": [
+            "<include resource='$0'/>"
+        ]
+    },
+    "config": {
+        "description": "A config.xml file that can be accessed by the resource.",
+        "prefix": "config",
+        "body": [
+            "<config src='$0' type='${1:server}' />"
+        ]
+    },
+    "export": {
+        "description": "Functions that can be used outside from this resource, so they can be used using the call function.",
+        "prefix": "export",
+        "body": [
+            "<export function='$0' type='$1' http='${2:false}' />"
+        ]
+    },
+    "html": {
+        "description": "HTML files that can be loaded on the resource.\nThe default attribute says which HTML file will be the deafult when visiting /resourceName/ on your server. Only one HTML file can be the default, the rest are ignored.\nThe raw attribute indicates whether it should be parsed by the Lua interpreter, this means, it will be treated as binary. Mostly used only for images.",
+        "prefix": "html",
+        "body": [
+            "<html src='$0' default='$1' raw='$2{false}' />"
+        ]
+    },
+    "min mta version": {
+        "description": "Minimum version required of MTA for this version to be ran.",
+        "prefix": "min_mta_version",
+        "body": [
+            "<min_mta_version client='${0:1.5.7}' server='${1:1.5.7}' />"
+        ]
+    },
+    "aclrequest": {
+        "description": "An ACL list of rights that the resource will need.",
+        "prefix": "aclrequest",
+        "body": [
+            "<aclrequest>",
+            "   <right name='$0' access='${1:true}' />",
+            "</aclrequest>"
+        ]
+    },
+    "right": {
+        "description": "An action used by the resource that is controlled by the ACL. Used inside the aclrequest node.",
+        "prefix": "right",
+        "body": [
+            "<right name='$0' access='${1:true}' />"
+        ]
+    },
+    "sync map element data": {
+        "description": "Note: When set, the setting will apply on all maps loaded by the resource.\nControls whether map element data such as PosX and DoubleSided are transferred to the client. For example, this is used only in the Map Editor and Interiors for them to work properly.",
+        "prefix": "sync_map_element_data",
+        "body": [
+            "<sync_map_element_data>${0:false}</sync_map_element_data>"
+        ]
+    },
+    "oop": {
+        "description": "Enable object oriented programming for this resource.",
+        "prefix": "oop",
+        "body": [
+            "<oop>${0:false}</oop>"
+        ]
+    },
+    "settings": {
+        "description": "A list of settings that can be accessed using the get and set functions in the resource. Used to add configuration to a gamemode.",
+        "prefix": "settings",
+        "body": [
+            "<settings>",
+            "   <setting name='$0' value='$1' friendlyname='$2' accept='$3' examples='$4' desc='$5' />",
+            "</settings>"
+        ]
+    },
+    "setting": {
+        "description": "A configuration for the resource that can be accessed using the get and set functions in the resource. This tag is used inside the settings node.",
+        "prefix": "setting",
+        "body": [
+            "<setting name='$0' value='$1' friendlyname='$2' accept='$3' examples='$4' desc='$5' />"
+        ]
+    }
+}

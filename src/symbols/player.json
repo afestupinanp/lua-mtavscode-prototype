@@ -1,0 +1,58 @@
+{
+    "getPlayerAccount": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "getAccount"
+        },
+        "deprecated": false,
+        "description": "This function returns the specified player's account object.",
+        "parameters": [
+            {
+                "name": "thePlayer",
+                "type": "player"
+            }
+        ]
+    },
+    "logIn": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "logIn"
+        },
+        "deprecated": false,
+        "description": "This functions logs the given player in to the given account. You need to provide the password needed to log into that account.",
+        "parameters": [
+            {
+                "name": "thePlayer",
+                "type": "player"
+            },
+            {
+                "name": "theAccount",
+                "type": "account"
+            },
+            {
+                "name": "thePassword",
+                "type": "string"
+            }
+        ]
+    },
+    "logOut": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "logOut"
+        },
+        "deprecated": false,
+        "description": "This function logs the given player out of his current account.",
+        "parameters": [
+            {
+                "name": "thePlayer",
+                "type": "player"
+            }
+        ]
+    },
+}

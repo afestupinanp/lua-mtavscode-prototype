@@ -1,0 +1,413 @@
+{
+    "addAccount": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": true,
+            "method": "add"
+        },
+        "deprecated": false,
+        "cancellable": false,
+        "description": "This function adds an account to the list of registered accounts of the current server.",
+        "parameters": [
+            {
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "name": "pass",
+                "type": "string"
+            },
+            {
+                "name": "allowCaseVariations",
+                "value": false,
+                "type": "bool"
+            }
+        ]
+    },
+    "copyAccountData": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "copyDataTo"
+        },
+        "deprecated": false,
+        "description": "This function copies all of the data from one account to another.",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            },
+            {
+                "name": "fromAccount",
+                "type": "account"
+            }
+        ]
+    },
+    "getAccount": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": true,
+            "method": ""
+        },
+        "deprecated": false,
+        "description": "This function returns an account for a specific user.",
+        "parameters": [
+            {
+                "name": "username",
+                "type": "string"
+            },
+            {
+                "name": "password",
+                "type": "string"
+            },
+            {
+                "name": "caseSensitive",
+                "value": false,
+                "type": "bool"
+            }
+        ]
+    },
+    "getAccountData": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "getData"
+        },
+        "deprecated": false,
+        "description": "This function retrieves a string that has been stored using setAccountData. Data stored as account data is persistent across user's sessions and maps, unless they are logged into a guest account.",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            },
+            {
+                "name": "key",
+                "type": "string"
+            }
+        ]
+    },
+    "getAccountName": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "getName"
+        },
+        "deprecated": false,
+        "description": "This function retrieves a string that has been stored using setAccountData. Data stored as account data is persistent across user's sessions and maps, unless they are logged into a guest account.",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            }
+        ]
+    },
+    "getAccountPlayer": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "getPlayer"
+        },
+        "deprecated": false,
+        "description": "This function returns the player element that is currently using a specified account, i.e. is logged into it. Only one player can use an account at a time.",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            }
+        ]
+    },
+    "getAccountSerial": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "getSerial"
+        },
+        "deprecated": false,
+        "description": "This function returns the last serial that logged onto the specified account.",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            }
+        ]
+    },
+    "getAccounts": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": true,
+            "method": "getAll"
+        },
+        "deprecated": false,
+        "description": "This function returns a table over all the accounts that exist in the server internal.db file.",
+        "parameters": []
+    },
+    "getAccountsBySerial": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": true,
+            "method": "getAllBySerial"
+        },
+        "deprecated": false,
+        "description": "his function returns a table containing all accounts that were logged onto from specified serial. If the serial is empty string, it will return all accounts that were never logged onto.",
+        "parameters": [
+            {
+                "name": "serial",
+                "type": "string"
+            }
+        ]
+    },
+    "getAllAccountData": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "getAllData"
+        },
+        "deprecated": false,
+        "description": "This function returns a table containing all the user data for the account provided.",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            }
+        ]
+    },
+    "isGuestAccount": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "isGuest"
+        },
+        "deprecated": false,
+        "description": "This function checks to see if an account is a guest account. A guest account is an account automatically created for a user when they join the server and deleted when they quit or login to another account. Data stored in a guest account is not stored after the player has left the server. As a consequence, this function will check if a player is logged in or not.",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            }
+        ]
+    },
+    "removeAccount": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "remove"
+        },
+        "deprecated": false,
+        "description": "This function is used to delete existing player accounts.",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            }
+        ]
+    },
+    "setAccountData": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "setData"
+        },
+        "deprecated": false,
+        "description": "This function sets a string to be stored in an account. This can then be retrieved using getAccountData. Data stored as account data is persistent across user's sessions and maps, unless they are logged into a guest account. Even if logged into a guest account, account data can be useful as a way to store a reference to your own account system, though it's persistence is equivalent to that of using setElementData on the player's element.",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            },
+            {
+                "name": "key",
+                "type": "string"
+            },
+            {
+                "name": "value",
+                "type": "string"
+            }
+        ]
+    },
+    "setAccountPassword": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "setPassword"
+        },
+        "deprecated": false,
+        "description": " This function sets the password of the specified account. **Please note:** For this to work, you must give admin rights to this resource.",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            },
+            {
+                "name": "password",
+                "type": "string"
+            }
+        ]
+    },
+    "getAccountByID": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": true,
+            "method": "getByID"
+        },
+        "deprecated": false,
+        "description": "This function returns the account with the specific ID.",
+        "parameters": [
+            {
+                "name": "id",
+                "type": "int"
+            }
+        ]
+    },
+    "getAccountID": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "getID"
+        },
+        "deprecated": false,
+        "description": "This function retrieves the ID of an account.",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            }
+        ]
+    },
+    "getAccountIP": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "getIP"
+        },
+        "deprecated": false,
+        "description": "This function retrieves the IP address of an account.",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            }
+        ]
+    },
+    "getAccountsByData": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": true,
+            "method": "getAllByData"
+        },
+        "deprecated": false,
+        "description": "This function returns a table containing all accounts with specified dataName and value (set with setAccountData).",
+        "parameters": [
+            {
+                "name": "dataName",
+                "type": "string"
+            },
+            {
+                "name": "value",
+                "type": "string"
+            }
+        ]
+    },
+    "getAccountsByIP": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": true,
+            "method": "getAllByIP"
+        },
+        "deprecated": false,
+        "description": "This function returns a table containing all accounts that were logged onto from specified IP-address.",
+        "parameters": [
+            {
+                "name": "ip",
+                "type": "string"
+            }
+        ]
+    },
+    "setAccountName": {
+        "type": "method",
+        "available": "server",
+        "oop": {
+            "static": false,
+            "method": "setName"
+        },
+        "deprecated": false,
+        "description": "This function sets the name of an account.",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            },
+            {
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "name": "allowCaseVariations",
+                "type": "bool",
+                "value": false
+            }
+        ]
+    },
+    "onAccountDataChange": {
+        "type": "event",
+        "available": "server",
+        "cancellable": true,
+        "deprecated": false,
+        "description": "This event is triggered when an accounts data changes through setAccountData.",
+        "sourceElement": "root",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            },
+            {
+                "name": "theKey",
+                "type": "string"
+            },
+            {
+                "name": "theValue",
+                "type": "string"
+            }
+        ]
+    }
+    "cacac": {
+        "type": "event",
+        "available": "client",
+        "cancellable": true,
+        "deprecated": false,
+        "description": "This event is triggered when an accounts data changes through setAccountData.",
+        "sourceElement": "root",
+        "parameters": [
+            {
+                "name": "theAccount",
+                "type": "account"
+            },
+            {
+                "name": "theKey",
+                "type": "string"
+            },
+            {
+                "name": "theValue",
+                "type": "string"
+            }
+        ]
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "Create command handler": {
+        "description": "Create a command handler.",
+        "prefix": "addCommandHandler",
+        "body": [
+            "addCommandHandler(\"$1\", function(player, cmd, val)",
+            "   $0",
+            "end, false)"
+        ]
+    },
+    "Custom event & handler": {
+        "description": "Creates a custom event and then adds a custom event handler",
+        "prefix": "custom event",
+        "body": [
+            "createEvent(\"${3:customEvent}\", ${2:false})",
+            "addEventHandler(\"${1:customEvent}\", root, function()",
+            "   $0",
+            "end)"
+        ]
+    },
+    "Create function": {
+        "description": "This snippet creates a function automatically for you",
+        "prefix": "create function",
+        "body": [
+            "function $1(...)",
+            "   $0",
+            "end"
+        ]
+    }
+}

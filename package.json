@@ -1,0 +1,85 @@
+{
+	"name": "lua-mtavscode",
+	"displayName": "lua-mtavscode",
+	"description": "A VSCode extension that enables IntelliSense and various other elements to your current Lua LSP.",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.43.0"
+	},
+	"categories": [
+		"Other",
+		"Extension Packs",
+		"Language Packs"
+	],
+	"activationEvents": [
+		"workspaceContains:**/meta.xml",
+		"workspaceContains:**/client.lua",
+		"workspaceContains:**/server.lua"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "lua-mtavscode.helloWorld",
+				"title": "Hello World"
+			}
+		],
+		"configuration": {
+			"title": "lua-mtavscode",
+			"properties": {
+				"lua-mtavscode.serverSideFileKeywords": {
+					"type": "array",
+					"default": [
+						"s_",
+						"server"
+					],
+					"description": "This configuration allows the extension to know which keyword in a file corresponds to a serversided Lua script."
+				},
+				"lua-mtavscode.clientSideFileKeywords": {
+					"type": "array",
+					"default": [
+						"c_",
+						"client"
+					],
+					"description": "This configuration allows the extension to know which keyword in a file corresponds to a clientsided Lua script."
+				},
+				"lua-mtavscode.showMethodOOPSignature": {
+					"type": "boolean",
+					"default": true,
+					"description": "This setting allows the extension to show the OOP signatures for a method. By default, the extension will show the signatures."
+				}
+			}
+		},
+		"snippets":[
+			{
+				"language": "lua",
+				"path": "./src/snippets/lua.json"
+			},
+			{
+				"language": "xml",
+				"path": "./src/snippets/xml.json"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"lint": "eslint src --ext ts",
+		"watch": "tsc -watch -p ./",
+		"pretest": "npm run compile && npm run lint",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.45.0",
+		"@types/glob": "^7.1.1",
+		"@types/mocha": "^7.0.2",
+		"@types/node": "^13.11.0",
+		"eslint": "^6.8.0",
+		"@typescript-eslint/parser": "^2.30.0",
+		"@typescript-eslint/eslint-plugin": "^2.30.0",
+		"glob": "^7.1.6",
+		"mocha": "^7.1.2",
+		"typescript": "^3.8.3",
+		"vscode-test": "^1.3.0"
+	}
+}
