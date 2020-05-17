@@ -1,4 +1,9 @@
 import {MTASymbol} from './MTASymbol';
+
+/**
+ * This class describes one of the elements descending from the root element in the MTA element tree. On simple
+ * terms, it wraps up the possible methods and events of a class.
+ */
 export class MTAClass {
     
     /**
@@ -29,6 +34,12 @@ export class MTAClass {
         }
     }
 
+    /**
+     * This method allows to create a new Object and add it to the list of symbols of the class.
+     * By symbol, it can be a method or an event.
+     * @param symbol The symbol wrapped up in the MTASymbol class.
+     * @param symbolName The current class name. 
+     */
     private addSymbolToList(symbol: MTASymbol, symbolName: string): void {
         Object.assign(this.symbolList, {[symbolName]: symbol});
     }

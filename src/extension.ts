@@ -121,7 +121,12 @@ function createCompletionItem(mtaSymbol: any, oopOnly: boolean = false): vscode.
 	let completionItem: vscode.CompletionItem = new vscode.CompletionItem(symbolName, itemKind);
 	completionItem.documentation = mtaSymbol.mdString;
 	completionItem.insertText = new vscode.SnippetString(mtaSymbol.insertText);
-	completionItem.detail = `${className} class - ${mtaSymbol.type}`;
+	completionItem.detail = `${className} class - `;
+	if (!mtaSymbol.oopName && mtaSymbol.type === "method") {
+		completionItem.detail = completionItem.detail + "constructor ";
+	}
+	completionItem.detail = completionItem.detail + "" + mtaSymbol.type;
+
 	if (mtaSymbol.isDeprecated) {
 		let tags: ReadonlyArray<vscode.CompletionItemTag> = [vscode.CompletionItemTag.Deprecated];
 		completionItem.tags = tags;
