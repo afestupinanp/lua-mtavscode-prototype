@@ -2,7 +2,7 @@
 	"name": "lua-mtavscode",
 	"displayName": "lua-mtavscode",
 	"description": "A VSCode extension that enables IntelliSense and various other elements to your current Lua LSP.",
-	"version": "0.0.1",
+	"version": "0.2.0",
 	"engines": {
 		"vscode": "^1.43.0"
 	},
@@ -18,12 +18,6 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"commands": [
-			{
-				"command": "lua-mtavscode.helloWorld",
-				"title": "Hello World"
-			}
-		],
 		"configuration": {
 			"title": "lua-mtavscode",
 			"properties": {
@@ -43,10 +37,15 @@
 					],
 					"description": "This configuration allows the extension to know which keyword in a file corresponds to a clientsided Lua script."
 				},
-				"lua-mtavscode.showMethodOOPSignature": {
+				"lua-mtavscode.provideOOPCompletion": {
 					"type": "boolean",
 					"default": true,
-					"description": "This setting allows the extension to show the OOP signatures for a method. By default, the extension will show the signatures."
+					"description": "This setting allows the extension to display the OOP completion item list when the characters \".\" or \":\" are pressed."
+				},
+				"lua-mtavscode.provideStructuredCompletion": {
+					"type": "boolean",
+					"default": true,
+					"description": "This setting allows the extension to display the structured completion item list."
 				}
 			}
 		},

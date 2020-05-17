@@ -388,26 +388,4 @@
             }
         ]
     }
-    "cacac": {
-        "type": "event",
-        "available": "client",
-        "cancellable": true,
-        "deprecated": false,
-        "description": "This event is triggered when an accounts data changes through setAccountData.",
-        "sourceElement": "root",
-        "parameters": [
-            {
-                "name": "theAccount",
-                "type": "account"
-            },
-            {
-                "name": "theKey",
-                "type": "string"
-            },
-            {
-                "name": "theValue",
-                "type": "string"
-            }
-        ]
-    }
 }
