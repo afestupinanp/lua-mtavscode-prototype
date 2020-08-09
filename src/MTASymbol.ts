@@ -8,7 +8,7 @@ export class MTASymbol {
      */
     private unparsedSymbol: Object;
     // ---------- This markdown string contains all of the variables below. --------
-    public mdString: vscode.MarkdownString; // this is what is presented to the user on the documentation of IntelliSense.
+    public mdString: vscode.MarkdownString | undefined; // this is what is presented to the user on the documentation of IntelliSense.
 
     public name: string;
     public parentClass: string;
@@ -18,8 +18,8 @@ export class MTASymbol {
 
     public description: string = "";
     public docString: string = "";
-    public parameters: Array<Object>; // the parameters are an array of objects that have a name, type and default properties.
-    public oopParameters: Array<Object>; // debating if should be kept, as this is displayed in the OOP symbol signature.
+    public parameters: Array<Object> = []; // the parameters are an array of objects that have a name, type and default properties.
+    public oopParameters: Array<Object> = []; // debating if should be kept, as this is displayed in the OOP symbol signature.
 
     public mtaWiki: string = ""; // holds a link to the MTA wikia, with extra information
 
@@ -29,12 +29,12 @@ export class MTASymbol {
     public isDeprecated: boolean = false; // allows to show the deprecated tags in the completion provider.
     public isCancellable: boolean = false; // has effect only when type === "event"
 
-    public methodSignature: string; // full method signature, with name and args.
-    public oopMethodSignature: string; // same as above, but with name and args.
+    public methodSignature: string = ""; // full method signature, with name and args.
+    public oopMethodSignature: string = ""; // same as above, but with name and args.
     // ----------------------------------
     
-    public insertText: string; // text to be inserted when the user selects it.
-    public insertTextOOP: string; // same as above, but for OOP.
+    public insertText: string = ""; // text to be inserted when the user selects it.
+    public insertTextOOP: string = ""; // same as above, but for OOP.
 
     /**
      * This class is in charge of parse the JSON file that has been read, and implement it
@@ -53,7 +53,7 @@ export class MTASymbol {
      * create many elements that are used in the completion item provider and hover item provider.
      */
     private parseObject(): void {
-        let object: Object = this.unparsedSymbol;
+        let object: any = this.unparsedSymbol;
         
         // load the object properties.
         this.type = object.type;
@@ -188,8 +188,8 @@ export class MTASymbol {
             }
             
             // check for default values, so they can be seen in the documentation string!
-            if (parameter.values) {
-                param = `${param} = ${param.value}`;
+            if (parameter.value) {
+                param = `${param} = ${parameter.value}`;
             }
 
             if (snippetApplicable && this.type === "method") {

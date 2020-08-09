@@ -51,7 +51,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 			let symbols = Object.entries(globalSymbolList).filter(([name, symbol]) => symbol.type === "event" && symbol.scriptSide === scriptSide);
 			symbols.forEach(([name, symbol]) => {
-				let completionItem: any = createCompletionItem(symbol);
+				let completionItem: any = createCompletionItem(symbol as MTASymbol);
 				if (completionItem) {
 					completionItems.items.push(completionItem);
 				}
@@ -162,7 +162,7 @@ function registerStructuredProviders(context: vscode.ExtensionContext, config: v
 
 			let symbols = Object.entries(globalSymbolList).filter(([name, symbol]) => symbol.type === "method" && symbol.scriptSide === scriptSide);
 			symbols.forEach(([name, symbol]) => {
-				let completionItem: any = createCompletionItem(symbol);
+				let completionItem: any = createCompletionItem(symbol as MTASymbol);
 				if (completionItem) {
 					completionItems.items.push(completionItem);
 				}

@@ -1,0 +1,26 @@
+{
+    "root": {
+        "available": "shared",
+        "description": "This MTA keyword has the same value as the getRootElement function.",
+    },
+    "resourceRoot": {
+        "available": "shared",
+        "description": "This MTA keyword has the same value as the getResourceRoot function."
+    },
+    "resource": {
+        "available": "shared",
+        "description": "This MTA keyword has the same value as the getThisResource function."
+    },
+    "exports": {
+        "available": "shared",
+        "description": "Table that contains the exported functions from other resources."
+    },
+    "guiRoot": {
+        "available": "client",
+        "description": "This MTA keyword used in the clientside has the same value as the getResourceGUIElement function, obtaining the element from the current resource."
+    },
+    "localPlayer": {
+        "available": "client",
+        "description": "This MTA keyword used in the clientside has the same value as the getLocalPlayer function."
+    },
+}

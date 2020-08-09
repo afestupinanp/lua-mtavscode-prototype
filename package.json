@@ -36,10 +36,10 @@
 						"client"
 					],
 					"description": "This configuration allows the extension to know which keyword in a file corresponds to a clientsided Lua script."
-				},
+				}
 			}
 		},
-		"snippets":[
+		"snippets": [
 			{
 				"language": "lua",
 				"path": "./src/snippets/lua.json"
