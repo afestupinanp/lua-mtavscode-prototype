@@ -11,8 +11,10 @@ let structuredCompletionProvider: vscode.Disposable;
 let clientKeywords: Array<string> = [];
 let serverKeywords: Array<string> = [];
 let scriptSide: string = "";
+let currentFilePath: string = "";
 
 let classes: Array<MTAClass> = [];
+let globalSymbolList: Array<Object> = [];
 
 
 /**
@@ -34,6 +36,8 @@ export function activate(context: vscode.ExtensionContext) {
 	classList.forEach((cls) => {
 		let mtaClass: MTAClass = new MTAClass(cls);
 		classes.push(mtaClass);
+		Object.assign(globalSymbolList, mtaClass.symbolList);
+
 	});
 
 	// get the current workspace configuration
@@ -45,14 +49,12 @@ export function activate(context: vscode.ExtensionContext) {
 			// Create a completionItems list.
 			let completionItems: vscode.CompletionList = new vscode.CompletionList();
 
-			classes.forEach((mtaClass) => {
-				let symbols = Object.entries(mtaClass.symbolList).filter(([name, symbol]) => symbol.type === "event" && symbol.scriptSide === scriptSide);
-				symbols.forEach(([name, symbol]) => {
-					let completionItem: any = createCompletionItem(symbol);
-					if (completionItem) {
-						completionItems.items.push(completionItem);
-					}
-				});
+			let symbols = Object.entries(globalSymbolList).filter(([name, symbol]) => symbol.type === "event" && symbol.scriptSide === scriptSide);
+			symbols.forEach(([name, symbol]) => {
+				let completionItem: any = createCompletionItem(symbol);
+				if (completionItem) {
+					completionItems.items.push(completionItem);
+				}
 			});
 			return completionItems;
 		}
@@ -60,6 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(eventCompletionProvider);
 
 	registerStructuredProviders(context, config);
+	registerHoverProvider(context);
 
 	// watch for configuration changes
 	vscode.workspace.onDidChangeConfiguration(event => {
@@ -71,6 +74,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// reload config
 		config = vscode.workspace.getConfiguration();
 		registerStructuredProviders(context, config);
+		registerHoverProvider(context);
 
 		// reload the allowed keywords.
 		loadClientKeywords(config);
@@ -92,6 +96,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// watch for file saving.
 	vscode.workspace.onDidSaveTextDocument((document) => {
+		if (document.uri.fsPath == currentFilePath) {
+			return;
+		}
 		getFileSide(document);
 	});
 
@@ -112,9 +119,9 @@ export function activate(context: vscode.ExtensionContext) {
 function getFileSide(document: vscode.TextDocument): string {
 	if (document && !document.isUntitled) {
 		// get the current file path and base the scriptside from the file name
-		let filePath: string = document.uri.fsPath;
-		let lastPosition: number = filePath.lastIndexOf("/");
-		let fileName: string = filePath.substr(lastPosition);
+		currentFilePath = document.uri.fsPath;
+		let lastPosition: number = currentFilePath.lastIndexOf("/");
+		let fileName: string = currentFilePath.substr(lastPosition);
 		
 		// check if file has portion of keywords for client and server.
 		let clientFile = clientKeywords.some((keyword) => fileName.includes(keyword));
@@ -153,19 +160,54 @@ function registerStructuredProviders(context: vscode.ExtensionContext, config: v
 			// Create a completionItems list.
 			let completionItems: vscode.CompletionList = new vscode.CompletionList();
 
-			classes.forEach((mtaClass) => {
-				let symbols = Object.entries(mtaClass.symbolList).filter(([name, symbol]) => symbol.type === "method" && symbol.scriptSide === scriptSide);
-				symbols.forEach(([name, symbol]) => {
-					let completionItem: any = createCompletionItem(symbol);
-					if (completionItem) {
-						completionItems.items.push(completionItem);
-					}
-				});
+			let symbols = Object.entries(globalSymbolList).filter(([name, symbol]) => symbol.type === "method" && symbol.scriptSide === scriptSide);
+			symbols.forEach(([name, symbol]) => {
+				let completionItem: any = createCompletionItem(symbol);
+				if (completionItem) {
+					completionItems.items.push(completionItem);
+				}
 			});
 			return completionItems;
 		}
 	}, "");
 	context.subscriptions.push(structuredCompletionProvider);
+}
+
+/**
+ * This method registers a new hover provider.
+ * @param context Current extension context.
+ */
+function registerHoverProvider(context: vscode.ExtensionContext) {
+	let provider: vscode.Disposable = vscode.languages.registerHoverProvider("lua", {
+		provideHover(document: vscode.TextDocument, position: vscode.Position) {
+			// get word on range.
+			let symbolRange = document.getWordRangeAtPosition(position, /[\w\.]+/);
+			let symbolName = document.getText(symbolRange);
+			
+			// check if there are symbols.
+			if (!symbolName) {
+				return;
+			}
+			
+			let mtaSymbol: any = undefined;
+			
+			// check if the selected word is found within the classes, and it's on the current scriptside.
+			let symbols = Object.entries(globalSymbolList).filter(([name, symbol]) => symbol.scriptSide === scriptSide);
+			mtaSymbol = symbols.find(([name, symbol]) => {
+				return symbol.name == symbolName;
+			});
+
+			// verify that the symbol was found.
+			if (!mtaSymbol) {
+				return;
+			}
+
+			return new vscode.Hover(mtaSymbol[1].mdString);
+
+		}
+	});
+
+	context.subscriptions.push(provider);
 }
 
 /**
