@@ -14,10 +14,6 @@ Every autocomplete and hover item describes what does the method do, its paramet
 
 For the meta.xml file, lua-mtavscode also provides snippets for autocompletion, with a little description.
 
-### Lua OOP
-
-lua-mtavscode provides the signature for both the standard and the OOP ways to use a method. This can be customized to be disabled or enabled, by default, it will be enabled.
-
 ### Useful snippets
 
 This extension provides useful snippets for coding your resource, for example, create a command handler, add a custom event and more!
@@ -32,5 +28,3 @@ The extension has the following settings:
 
 * ``lua-mtavscode.serverSideFileKeywords``: This setting allows the extension to scan the filename to determine if it belongs to a serverside script. It's an array of strings, and by default, it has the following: ``_s, server``.
 * ``lua-mtavscode.clientSideFileKeywords``: This setting allows the extension to scan the filename to determine if it belongs to a clientside script. It's an array of strings, and by default, it has the following: ``_c, client``.
-* ``lua-mtavscode.provideOOPCompletion``: This setting toggles the visibility of the OOP signatures for a method. It's a boolean, and by default, its value is ``true``.
-* ``lua-mtavscode.provideStructuredCompletion``: This setting toggles the visibility of the structured signatures for a method. It's a boolean, and by default, its value is ``true``.

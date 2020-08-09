@@ -135,7 +135,7 @@ export class MTASymbol {
             }
 
             // verify that it has an oop name. if it doesnt, it shouldn't have a separator, nor does a method name
-            // becuase it means it is a constructor.
+            // because it means it's a constructor.
             if (this.oopName) {
                 methodName = this.oopName;
             } else {
@@ -165,30 +165,41 @@ export class MTASymbol {
             usableParameters = this.oopParameters;
         }
         
-        // check if the symbol has parameters.
-        if (usableParameters) { 
-            let paramAmount: number = usableParameters.length - 1;
-            usableParameters.forEach((parameter, index) => {
-                let comma: string = (index === paramAmount) ? "" : ", ";
-                let param: string = `${parameter.name}`;
-
-                if (this.type === "method" || (this.type === "event" && !snippetApplicable)) {
-                    param = `${parameter.type} ${parameter.name}`;
-                }
-                
-                // check for default values, to they can be seen in the documentation string!
-                if (parameter.values) {
-                    param = `${param} = ${param.value}`;
-                }
-
-                if (snippetApplicable && this.type === "method") {
-                    param = `\$\{${index}:${param}\}`;
-                }
-
-                param = `${param}${comma}`;
-                paramString = `${paramString}${param}`;
-            });
+        // check if the symbol has no parameters.
+        if (!usableParameters) { 
+            return paramString;
         }
+        
+        let paramAmount: number = usableParameters.length - 1;
+        let cursorPosition: number = 1;
+        let usableLength: number = usableParameters.length;
+        usableParameters.forEach((parameter, index) => {
+            let comma: string = ", ";
+            // check current cursor position, and compare it to the params length
+            // so we know when to stop adding parameters, and set the final cursor.
+            if (cursorPosition === usableLength) {
+                comma = "";
+                cursorPosition = 0;
+            }
+            let param: string = `${parameter.name}`;
+
+            if (this.type === "method" || (this.type === "event" && !snippetApplicable)) {
+                param = `${parameter.type} ${parameter.name}`;
+            }
+            
+            // check for default values, so they can be seen in the documentation string!
+            if (parameter.values) {
+                param = `${param} = ${param.value}`;
+            }
+
+            if (snippetApplicable && this.type === "method") {
+                param = `\$\{${cursorPosition}:${param}\}`;
+            }
+
+            param = `${param}${comma}`;
+            paramString = `${paramString}${param}`;
+            cursorPosition++;
+        });
 
         return paramString;
     }

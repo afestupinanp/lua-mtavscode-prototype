@@ -37,16 +37,6 @@
 					],
 					"description": "This configuration allows the extension to know which keyword in a file corresponds to a clientsided Lua script."
 				},
-				"lua-mtavscode.provideOOPCompletion": {
-					"type": "boolean",
-					"default": true,
-					"description": "This setting allows the extension to display the OOP completion item list when the characters \".\" or \":\" are pressed."
-				},
-				"lua-mtavscode.provideStructuredCompletion": {
-					"type": "boolean",
-					"default": true,
-					"description": "This setting allows the extension to display the structured completion item list."
-				}
 			}
 		},
 		"snippets":[
