@@ -1,7 +1,7 @@
 {
     "root": {
         "available": "shared",
-        "description": "This MTA keyword has the same value as the getRootElement function.",
+        "description": "This MTA keyword has the same value as the getRootElement function."
     },
     "resourceRoot": {
         "available": "shared",
@@ -22,5 +22,5 @@
     "localPlayer": {
         "available": "client",
         "description": "This MTA keyword used in the clientside has the same value as the getLocalPlayer function."
-    },
+    }
 }

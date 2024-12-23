@@ -1,0 +1,1 @@
+{"reloadBrowserPage":{"type":"method","parameters":[{"type":"browser","name":"webBrowser"},{"type":"bool","name":"ignoreCache"}],"available":"client"}}

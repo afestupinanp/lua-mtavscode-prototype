@@ -29,6 +29,7 @@ export class MTAClass {
             Object.entries(this.jsonSymbol).forEach(([symbolName, symbol]) => {
                 // create the symbol and add it to the list.
                 let mtaSymbol: MTASymbol = this.createSymbol(symbol, symbolName, className);
+                console.log(symbolName);
                 this.addSymbolToList(mtaSymbol, symbolName);
             });
         }

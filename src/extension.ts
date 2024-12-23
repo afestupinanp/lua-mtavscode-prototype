@@ -26,19 +26,11 @@ export function activate(context: vscode.ExtensionContext) {
 	// debug
 	vscode.window.showInformationMessage("lua-mtavscode is now running.");
 	
-	// Load all the classes.
-	let classList: Array<string> = [
-		"account",
-		"player"
-	];
 	
 	// And create the MTAClass object.
-	classList.forEach((cls) => {
-		let mtaClass: MTAClass = new MTAClass(cls);
-		classes.push(mtaClass);
-		Object.assign(globalSymbolList, mtaClass.symbolList);
-
-	});
+	let mtaClass: MTAClass = new MTAClass('generated');
+	classes.push(mtaClass);
+	Object.assign(globalSymbolList, mtaClass.symbolList);
 
 	// get the current workspace configuration
 	let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration();

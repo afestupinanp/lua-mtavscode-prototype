@@ -1,0 +1,17 @@
+<meta>
+    <!-- Resource information -->
+    <info author="xman40100" version="1.0.0" description="This is a test resource." />
+    
+    <!-- ------------ -->
+
+    <!-- Main scripts -->
+    <script src="src/server.lua" type="server" />
+    <script src="src/client.lua" type="client" />
+    <!-- ------------ -->
+
+    <!-- Client required files -->
+        <file src="files//Presupuesto_6746133.pdf" />
+    <file src="files//Fase 5_Andres Felipe Estupiñan.pdf" />
+
+    <!-- ------------ -->
+</meta>

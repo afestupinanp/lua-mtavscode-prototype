@@ -173,7 +173,7 @@ export class MTASymbol {
         let paramAmount: number = usableParameters.length - 1;
         let cursorPosition: number = 1;
         let usableLength: number = usableParameters.length;
-        usableParameters.forEach((parameter, index) => {
+        usableParameters.forEach((parameter: {name: string, type: string, value?: string}, _: number) => {
             let comma: string = ", ";
             // check current cursor position, and compare it to the params length
             // so we know when to stop adding parameters, and set the final cursor.
