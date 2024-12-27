@@ -23,6 +23,7 @@ export class MTASymbol {
 
     public mtaWiki: string = ""; // holds a link to the MTA wikia, with extra information
 
+    public hasOOPConfiguration: boolean = false;
     public isOOPStatic: boolean = false; // has effect only when type === "method"
     public oopName: string = ""; // has effect only when type === "method"
 
@@ -68,6 +69,7 @@ export class MTASymbol {
         
         // if the OOP property is defined in the object, we shall load all the properties.
         if (object.oop) {
+            this.hasOOPConfiguration = true;
             this.isOOPStatic = object.oop.static;
             this.oopName = object.oop.method;
             this.oopParameters = object.parameters.filter((param, index) => {
@@ -247,6 +249,7 @@ export class MTASymbol {
      */
     private generateMarkdownString(): vscode.MarkdownString {
         this.mdString = new vscode.MarkdownString(this.docString, true);
+        this.mdString.isTrusted = true;
         return this.mdString;
     }
 
@@ -256,8 +259,8 @@ export class MTASymbol {
      * @returns This method should return a string that is Markdown-ready.
      */
     private generateDocumentationString(): string {
-        let mtaWiki: string = `[MTA Wiki ref](${this.mtaWiki})`;
-        let description: string = `**Description \(${mtaWiki}\):**\n\n${this.description}`;
+        let mtaWiki: string = `[Full MTA Wiki reference:](${this.mtaWiki})`;
+        let description: string = this.description?.length ? `**${mtaWiki}**\n\n${this.description}` : '';
         let oopSegment: string = "";
         let deprecationWarning: string = "";
         let cancellableSegment: string = "";
@@ -268,7 +271,7 @@ export class MTASymbol {
         }
 
         // verify that is a method to add the oop segment.
-        if (this.type === "method") {
+        if (this.type === "method" && this.hasOOPConfiguration) {
             if (this.isOOPStatic) {
                 oopSegment = "**OOP (static method):**\n\n";
             } else {

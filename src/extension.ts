@@ -4,6 +4,17 @@ import { MTAClass } from './MTAClass';
 import { MTASymbol } from './MTASymbol';
 import Utils from './Utils';
 
+const CONFIG_KEYWORD: string = 'lua-mtavscode';
+const CONFIG_CLIENT_KEYWORDS: string = 'lua-mtavscode.clientSideFileKeywords';
+const CONFIG_SERVER_KEYWORDS: string = 'lua-mtavscode.serverSideFileKeywords';
+
+const SYMBOL_METHOD: string = 'method';
+const SYMBOL_EVENT: string = 'event';
+
+const SCRIPTSIDE_SERVER = 'server';
+const SCRIPTSIDE_SHARED = 'shared';
+const SCRIPTSIDE_CLIENT = 'client';
+
 
 let eventCompletionProvider: vscode.Disposable;
 let structuredCompletionProvider: vscode.Disposable;
@@ -13,8 +24,7 @@ let serverKeywords: Array<string> = [];
 let scriptSide: string = "";
 let currentFilePath: string = "";
 
-let classes: Array<MTAClass> = [];
-let globalSymbolList: Array<Object> = [];
+let globalSymbolList: Record<string, MTASymbol> = {};
 
 
 /**
@@ -26,10 +36,8 @@ export function activate(context: vscode.ExtensionContext) {
 	// debug
 	vscode.window.showInformationMessage("lua-mtavscode is now running.");
 	
-	
 	// And create the MTAClass object.
 	let mtaClass: MTAClass = new MTAClass('generated');
-	classes.push(mtaClass);
 	Object.assign(globalSymbolList, mtaClass.symbolList);
 
 	// get the current workspace configuration
@@ -41,7 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
 			// Create a completionItems list.
 			let completionItems: vscode.CompletionList = new vscode.CompletionList();
 
-			let symbols = Object.entries(globalSymbolList).filter(([name, symbol]) => symbol.type === "event" && symbol.scriptSide === scriptSide);
+			let symbols = Object.entries(globalSymbolList).filter(([name, symbol]) => symbol.type === SYMBOL_EVENT && symbol.scriptSide === scriptSide);
 			symbols.forEach(([name, symbol]) => {
 				let completionItem: any = createCompletionItem(symbol as MTASymbol);
 				if (completionItem) {
@@ -59,7 +67,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// watch for configuration changes
 	vscode.workspace.onDidChangeConfiguration(event => {
 		// check if the extension's settings were affected.
-		let affected = event.affectsConfiguration("lua-mtavscode");
+		let affected = event.affectsConfiguration(CONFIG_KEYWORD);
 		if (!affected) {
 			return;
 		}
@@ -120,15 +128,15 @@ function getFileSide(document: vscode.TextDocument): string {
 		let serverFile = serverKeywords.some((keyword) => fileName.includes(keyword));
 
 		if (clientFile && !serverFile) {
-			scriptSide = "client";
+			scriptSide = SCRIPTSIDE_CLIENT;
 		} else if (!clientFile && serverFile) {
-			scriptSide = "server";
+			scriptSide = SCRIPTSIDE_SERVER;
 		} else {
-			scriptSide = "shared";
+			scriptSide = SCRIPTSIDE_SHARED;
 		}
 	} else {
 		// we don't know the scriptside, so we assume it's shared.
-		scriptSide = "shared";
+		scriptSide = SCRIPTSIDE_SHARED;
 	}
 
 	vscode.window.showInformationMessage("Scriptside: " + scriptSide);
@@ -152,7 +160,7 @@ function registerStructuredProviders(context: vscode.ExtensionContext, config: v
 			// Create a completionItems list.
 			let completionItems: vscode.CompletionList = new vscode.CompletionList();
 
-			let symbols = Object.entries(globalSymbolList).filter(([name, symbol]) => symbol.type === "method" && symbol.scriptSide === scriptSide);
+			let symbols = Object.entries(globalSymbolList).filter(([name, symbol]) => symbol.type === SYMBOL_METHOD && symbol.scriptSide === scriptSide);
 			symbols.forEach(([name, symbol]) => {
 				let completionItem: any = createCompletionItem(symbol as MTASymbol);
 				if (completionItem) {
@@ -180,21 +188,13 @@ function registerHoverProvider(context: vscode.ExtensionContext) {
 			if (!symbolName) {
 				return;
 			}
-			
-			let mtaSymbol: any = undefined;
-			
-			// check if the selected word is found within the classes, and it's on the current scriptside.
-			let symbols = Object.entries(globalSymbolList).filter(([name, symbol]) => symbol.scriptSide === scriptSide);
-			mtaSymbol = symbols.find(([name, symbol]) => {
-				return symbol.name == symbolName;
-			});
 
-			// verify that the symbol was found.
+			const mtaSymbol: MTASymbol|undefined = globalSymbolList[symbolName] ?? null;
 			if (!mtaSymbol) {
 				return;
 			}
 
-			return new vscode.Hover(mtaSymbol[1].mdString);
+			return new vscode.Hover(mtaSymbol?.mdString);
 
 		}
 	});
@@ -207,7 +207,7 @@ function registerHoverProvider(context: vscode.ExtensionContext) {
  * @param config The current workspace configuration.
  */
 function loadClientKeywords(config: vscode.WorkspaceConfiguration): void {
-	clientKeywords = config.get("lua-mtavscode.clientSideFileKeywords") ?? [];
+	clientKeywords = config.get(CONFIG_CLIENT_KEYWORDS) ?? [];
 }
 
 /**
@@ -215,7 +215,7 @@ function loadClientKeywords(config: vscode.WorkspaceConfiguration): void {
  * @param config The current workspace configuration.
  */
 function loadServerKeywords(config: vscode.WorkspaceConfiguration): void {
-	serverKeywords = config.get("lua-mtavscode.serverSideFileKeywords") ?? [];
+	serverKeywords = config.get(CONFIG_SERVER_KEYWORDS) ?? [];
 }
 
 /**
@@ -226,24 +226,23 @@ function loadServerKeywords(config: vscode.WorkspaceConfiguration): void {
  */
 function createCompletionItem(mtaSymbol: MTASymbol): vscode.CompletionItem|undefined {
 	let itemKind: vscode.CompletionItemKind;
-	let className: string = Utils.firstLetterUpper(mtaSymbol.parentClass);
 	let symbolName: string = mtaSymbol.name;
-	let detailType: string = "";
+	let symbolType: string = "";
 	let insertText: string = mtaSymbol.insertText;
 
-	if (mtaSymbol.type === "method") {
+	if (mtaSymbol.type === SYMBOL_METHOD) {
 		itemKind = vscode.CompletionItemKind.Method;
-		detailType = "method";
+		symbolType = SYMBOL_METHOD;
 
 	} else {
 		itemKind = vscode.CompletionItemKind.Event;
-		detailType = "event";
+		symbolType = SYMBOL_EVENT;
 	}
 
 	let completionItem: vscode.CompletionItem = new vscode.CompletionItem(symbolName, itemKind);
 	completionItem.documentation = mtaSymbol.mdString;
 	completionItem.insertText = new vscode.SnippetString(insertText);
-	completionItem.detail = `${className} class - ${detailType} - ${mtaSymbol.scriptSide}`;
+	completionItem.detail = `${Utils.firstLetterUpper(mtaSymbol?.scriptSide)} ${symbolType}`;
 
 	if (mtaSymbol.isDeprecated) {
 		let tags: ReadonlyArray<vscode.CompletionItemTag> = [vscode.CompletionItemTag.Deprecated];
