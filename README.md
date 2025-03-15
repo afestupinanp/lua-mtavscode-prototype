@@ -4,11 +4,11 @@ lua-mtavscode is an extension for Visual Studio Code editor to add IntelliSense 
 
 ## Features
 
-### IntelliSense support
+### Code completion support
 
 lua-mtavscode comes with autocomplete, hover and signature providers for various symbols that belong to MTA San Andreas. The extension can be customized to differentitate between client, server and sharedside symbols, allowing you to see the only the ones that are available for the scriptside you are dealing with. This setting can be customized, allowing special keywords to be used to differentiate both scriptsides, by default, it uses the c_ and s_ syntaxes, as well as looking for "server" and "client" words in the file.
 
-Please note, this is not a full LSP, which means, it doesn't have detection for variables, custom function in the IntelliSense, and other general features of a LSP.
+Please note, this is not a full LSP, which means, it doesn't have detection for variables, custom functions, and other general features of a LSP.
 
 Every autocomplete and hover item describes what does the method do, its parameters, as well as a link to the [MTA Wiki](https://wiki.multitheftauto.com) for full reference!
 
