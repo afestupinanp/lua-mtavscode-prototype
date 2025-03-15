@@ -26,6 +26,8 @@ let currentFilePath: string = "";
 
 let globalSymbolList: Record<string, MTASymbol> = {};
 
+let isProduction: boolean = false;
+
 
 /**
  * Method called when the extension has been activated. The extension is only activated when Lua files
@@ -33,8 +35,13 @@ let globalSymbolList: Record<string, MTASymbol> = {};
  * @param context The extension context.
  */
 export function activate(context: vscode.ExtensionContext) {
+	isProduction = context.extensionMode == vscode.ExtensionMode.Production;
+	console.log(context.extensionMode);
+
 	// debug
-	vscode.window.showInformationMessage("lua-mtavscode is now running.");
+	if (!isProduction) {
+		vscode.window.showInformationMessage("lua-mtavscode is now running.");
+	}
 	
 	// And create the MTAClass object.
 	let mtaClass: MTAClass = new MTAClass('generated');
@@ -45,12 +52,13 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Create the completion items aka the IntelliSense list ONLY for the event symbols.
 	eventCompletionProvider = vscode.languages.registerCompletionItemProvider("lua", {
-		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
+		// provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
+		provideCompletionItems() {
 			// Create a completionItems list.
 			let completionItems: vscode.CompletionList = new vscode.CompletionList();
 
-			let symbols = Object.entries(globalSymbolList).filter(([name, symbol]) => symbol.type === SYMBOL_EVENT && symbol.scriptSide === scriptSide);
-			symbols.forEach(([name, symbol]) => {
+			let symbols = Object.entries(globalSymbolList).filter(([_name, symbol]) => symbol.type === SYMBOL_EVENT && symbol.scriptSide === scriptSide);
+			symbols.forEach(([_name, symbol]) => {
 				let completionItem: any = createCompletionItem(symbol as MTASymbol);
 				if (completionItem) {
 					completionItems.items.push(completionItem);
@@ -61,7 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}, "");
 	context.subscriptions.push(eventCompletionProvider);
 
-	registerStructuredProviders(context, config);
+	registerStructuredProviders(context);
 	registerHoverProvider(context);
 
 	// watch for configuration changes
@@ -73,7 +81,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 		// reload config
 		config = vscode.workspace.getConfiguration();
-		registerStructuredProviders(context, config);
+		registerStructuredProviders(context);
 		registerHoverProvider(context);
 
 		// reload the allowed keywords.
@@ -121,7 +129,7 @@ function getFileSide(document: vscode.TextDocument): string {
 		// get the current file path and base the scriptside from the file name
 		currentFilePath = document.uri.fsPath;
 		let lastPosition: number = currentFilePath.lastIndexOf("/");
-		let fileName: string = currentFilePath.substr(lastPosition);
+		let fileName: string = currentFilePath.substring(lastPosition);
 		
 		// check if file has portion of keywords for client and server.
 		let clientFile = clientKeywords.some((keyword) => fileName.includes(keyword));
@@ -139,7 +147,10 @@ function getFileSide(document: vscode.TextDocument): string {
 		scriptSide = SCRIPTSIDE_SHARED;
 	}
 
-	vscode.window.showInformationMessage("Scriptside: " + scriptSide);
+	if (!isProduction) {
+		vscode.window.showInformationMessage("Scriptside: " + scriptSide);
+	}
+	
 	return scriptSide;
 }
 
@@ -148,7 +159,7 @@ function getFileSide(document: vscode.TextDocument): string {
  * @param context The current extension context.
  * @param config The current workspace configuration.
  */
-function registerStructuredProviders(context: vscode.ExtensionContext, config: vscode.WorkspaceConfiguration) {
+function registerStructuredProviders(context: vscode.ExtensionContext) {
 	// dispose of the current provider, to not allow duplicates.
 	if (structuredCompletionProvider) {
 		structuredCompletionProvider.dispose();
@@ -156,12 +167,12 @@ function registerStructuredProviders(context: vscode.ExtensionContext, config: v
 
 	// Create the completion items aka the IntelliSense list.
 	structuredCompletionProvider = vscode.languages.registerCompletionItemProvider("lua", {
-		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
+		provideCompletionItems() {
 			// Create a completionItems list.
 			let completionItems: vscode.CompletionList = new vscode.CompletionList();
 
-			let symbols = Object.entries(globalSymbolList).filter(([name, symbol]) => symbol.type === SYMBOL_METHOD && symbol.scriptSide === scriptSide);
-			symbols.forEach(([name, symbol]) => {
+			let symbols = Object.entries(globalSymbolList).filter(([_name, symbol]) => symbol.type === SYMBOL_METHOD && symbol.scriptSide === scriptSide);
+			symbols.forEach(([_name, symbol]) => {
 				let completionItem: any = createCompletionItem(symbol as MTASymbol);
 				if (completionItem) {
 					completionItems.items.push(completionItem);
