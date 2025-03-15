@@ -1,3 +1,4 @@
+import Utils from '../Utils';
 import {MTASymbol} from './MTASymbol';
 
 /**
@@ -21,7 +22,9 @@ export class MTAClass {
 
 
     public constructor(className: string) {
-        this.jsonSymbol = require("./symbols/" + className.toLowerCase() + ".json");
+        // Load symbols from JSON file.
+        // this.jsonSymbol = require("../symbols/" + className.toLowerCase() + ".json");
+        this.jsonSymbol = Utils.loadJsonFile(`symbols/${className.toLowerCase()}.json`)
 
         this.className = className;
         // We have to iterate over the registered symbols in the JSON file...

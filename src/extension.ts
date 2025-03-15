@@ -1,20 +1,11 @@
 import * as vscode from 'vscode';
 
-import { MTAClass } from './MTAClass';
-import { MTASymbol } from './MTASymbol';
+import { MTAClass } from './classes/MTAClass';
+import { MTASymbol } from './classes/MTASymbol';
 import Utils from './Utils';
-
-const CONFIG_KEYWORD: string = 'lua-mtavscode';
-const CONFIG_CLIENT_KEYWORDS: string = 'lua-mtavscode.clientSideFileKeywords';
-const CONFIG_SERVER_KEYWORDS: string = 'lua-mtavscode.serverSideFileKeywords';
-
-const SYMBOL_METHOD: string = 'method';
-const SYMBOL_EVENT: string = 'event';
-
-const SCRIPTSIDE_SERVER = 'server';
-const SCRIPTSIDE_SHARED = 'shared';
-const SCRIPTSIDE_CLIENT = 'client';
-
+import { CONFIG_CLIENT_KEYWORDS, CONFIG_KEYWORD, CONFIG_SERVER_KEYWORDS } from './constants';
+import SymbolType from './enums/SymbolType';
+import Scriptside from './enums/Scriptside';
 
 let eventCompletionProvider: vscode.Disposable;
 let structuredCompletionProvider: vscode.Disposable;
@@ -25,6 +16,7 @@ let scriptSide: string = "";
 let currentFilePath: string = "";
 
 let globalSymbolList: Record<string, MTASymbol> = {};
+let mtaKeywordList: Record<string, string> = {};
 
 let isProduction: boolean = false;
 
@@ -36,16 +28,18 @@ let isProduction: boolean = false;
  */
 export function activate(context: vscode.ExtensionContext) {
 	isProduction = context.extensionMode == vscode.ExtensionMode.Production;
-	console.log(context.extensionMode);
 
 	// debug
 	if (!isProduction) {
 		vscode.window.showInformationMessage("lua-mtavscode is now running.");
 	}
 	
-	// And create the MTAClass object.
+	// Load generated file of symbols.
 	let mtaClass: MTAClass = new MTAClass('generated');
 	Object.assign(globalSymbolList, mtaClass.symbolList);
+
+	// Load MTA keywords.
+	Object.assign(mtaKeywordList, Utils.loadJsonFile('symbols/mta-keywords.json'));
 
 	// get the current workspace configuration
 	let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration();
@@ -57,7 +51,7 @@ export function activate(context: vscode.ExtensionContext) {
 			// Create a completionItems list.
 			let completionItems: vscode.CompletionList = new vscode.CompletionList();
 
-			let symbols = Object.entries(globalSymbolList).filter(([_name, symbol]) => symbol.type === SYMBOL_EVENT && symbol.scriptSide === scriptSide);
+			let symbols = Object.entries(globalSymbolList).filter(([_name, symbol]) => symbol.type === SymbolType.EVENT && symbol.scriptSide === scriptSide);
 			symbols.forEach(([_name, symbol]) => {
 				let completionItem: any = createCompletionItem(symbol as MTASymbol);
 				if (completionItem) {
@@ -136,15 +130,15 @@ function getFileSide(document: vscode.TextDocument): string {
 		let serverFile = serverKeywords.some((keyword) => fileName.includes(keyword));
 
 		if (clientFile && !serverFile) {
-			scriptSide = SCRIPTSIDE_CLIENT;
+			scriptSide = Scriptside.CLIENT;
 		} else if (!clientFile && serverFile) {
-			scriptSide = SCRIPTSIDE_SERVER;
+			scriptSide = Scriptside.SERVER;
 		} else {
-			scriptSide = SCRIPTSIDE_SHARED;
+			scriptSide = Scriptside.SHARED;
 		}
 	} else {
 		// we don't know the scriptside, so we assume it's shared.
-		scriptSide = SCRIPTSIDE_SHARED;
+		scriptSide = Scriptside.SHARED;
 	}
 
 	if (!isProduction) {
@@ -171,7 +165,7 @@ function registerStructuredProviders(context: vscode.ExtensionContext) {
 			// Create a completionItems list.
 			let completionItems: vscode.CompletionList = new vscode.CompletionList();
 
-			let symbols = Object.entries(globalSymbolList).filter(([_name, symbol]) => symbol.type === SYMBOL_METHOD && symbol.scriptSide === scriptSide);
+			let symbols = Object.entries(globalSymbolList).filter(([_name, symbol]) => symbol.type === SymbolType.METHOD && symbol.scriptSide === scriptSide);
 			symbols.forEach(([_name, symbol]) => {
 				let completionItem: any = createCompletionItem(symbol as MTASymbol);
 				if (completionItem) {
@@ -202,6 +196,11 @@ function registerHoverProvider(context: vscode.ExtensionContext) {
 
 			const mtaSymbol: MTASymbol|undefined = globalSymbolList[symbolName] ?? null;
 			if (!mtaSymbol) {
+				const mtaKeywordDescription: string = mtaKeywordList[symbolName] ?? null;
+				if (mtaKeywordDescription) {
+					return new vscode.Hover(mtaKeywordDescription);
+				}
+
 				return;
 			}
 
@@ -241,13 +240,13 @@ function createCompletionItem(mtaSymbol: MTASymbol): vscode.CompletionItem|undef
 	let symbolType: string = "";
 	let insertText: string = mtaSymbol.insertText;
 
-	if (mtaSymbol.type === SYMBOL_METHOD) {
+	if (mtaSymbol.type === SymbolType.METHOD) {
 		itemKind = vscode.CompletionItemKind.Method;
-		symbolType = SYMBOL_METHOD;
+		symbolType = SymbolType.METHOD;
 
 	} else {
 		itemKind = vscode.CompletionItemKind.Event;
-		symbolType = SYMBOL_EVENT;
+		symbolType = SymbolType.EVENT;
 	}
 
 	let completionItem: vscode.CompletionItem = new vscode.CompletionItem(symbolName, itemKind);

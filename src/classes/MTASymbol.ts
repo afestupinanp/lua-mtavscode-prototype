@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import Utils from './Utils';
+import Utils from '../Utils';
+import SymbolType from '../enums/SymbolType';
 
 export class MTASymbol {
 
@@ -12,14 +13,14 @@ export class MTASymbol {
 
     public name: string;
     public parentClass: string;
-    public type: string = "method";
+    public type: string = SymbolType.METHOD;
     public scriptSide: string = "shared"; // by default, methods and events are on both scriptsides.
     public sourceElement: string = "root"; // has effect only when type === "event"
 
     public description: string = "";
     public docString: string = "";
     public parameters: Array<Object> = []; // the parameters are an array of objects that have a name, type and default properties.
-    public oopParameters: Array<Object> = []; // debating if should be kept, as this is displayed in the OOP symbol signature.
+    public oopParameters: Array<Object> = []; // TODO: debating if should be kept, as this is displayed in the OOP symbol signature.
 
     public mtaWiki: string = ""; // holds a link to the MTA wikia, with extra information
 
@@ -100,7 +101,7 @@ export class MTASymbol {
         let signature: string = "```"; // we start a code block in Markdown
         let paramString: string = this.generateParameterString(false);
 
-        if (this.type === "method") {
+        if (this.type === SymbolType.METHOD) {
             signature = `${signature}${this.name}(${paramString})\`\`\``;
         } else if (this.sourceElement && this.type === "event") {
             signature = `${signature}addEventHandler("${this.name}", ${this.sourceElement}, function(${paramString}))\`\`\`\n\n**Event source:** ${this.sourceElement} element.\n\n`;
@@ -121,7 +122,7 @@ export class MTASymbol {
         let paramString: string = this.generateParameterString(true);
 
         // filter only methods.
-        if (this.type === "method") {
+        if (this.type === SymbolType.METHOD) {
             signature = "```"; // we start a code block in Markdown
             let separator: string = "";
             let className: string = this.parentClass;
@@ -185,7 +186,7 @@ export class MTASymbol {
             }
             let param: string = `${parameter.name}`;
 
-            if (this.type === "method" || (this.type === "event" && !snippetApplicable)) {
+            if (this.type === SymbolType.METHOD || (this.type === SymbolType.EVENT && !snippetApplicable)) {
                 param = `${parameter.type} ${parameter.name}`;
             }
             
@@ -194,7 +195,7 @@ export class MTASymbol {
                 param = `${param} = ${parameter.value}`;
             }
 
-            if (snippetApplicable && this.type === "method") {
+            if (snippetApplicable && this.type === SymbolType.METHOD) {
                 param = `\$\{${cursorPosition}:${param}\}`;
             }
 
@@ -216,7 +217,7 @@ export class MTASymbol {
         let insertText: string = "";
         let parameterString: string = this.generateParameterString(oop, true);
 
-        if (this.type === "method") {
+        if (this.type === SymbolType.METHOD) {
             if (oop) {
                 insertText = `${this.oopName}(${parameterString})`;
             } else {
@@ -271,7 +272,7 @@ export class MTASymbol {
         }
 
         // verify that is a method to add the oop segment.
-        if (this.type === "method" && this.hasOOPConfiguration) {
+        if (this.type === SymbolType.METHOD && this.hasOOPConfiguration) {
             if (this.isOOPStatic) {
                 oopSegment = "**OOP (static method):**\n\n";
             } else {

@@ -1,7 +1,15 @@
 # Adding symbols
 ## How does it work?
 
-Adding symbols is as simple as adding them into the JSON files, they will be automatically displayed for the user on the IntelliSense autocomplete and hover providers. You must, however, follow a syntax that allows the extension to load the JSON files.
+There is a script that we can use in order to crawl automatically through the wiki. It will obtain most of the pages, however, there are a few that may require manual intervention as the pages may have multiple code blocks, or simply the scraping script can't get it easily because the page has a different structure.
+
+```
+npm run generate
+```
+
+### Manually adding symbols
+
+Adding symbols is as simple as adding them into the JSON files, they will be automatically displayed for the user on the extension's autocomplete and hover providers. You must, however, follow a syntax that allows the extension to load the JSON files.
 
 This is an example, taken from the accounts.json "class":
 ```json
@@ -41,11 +49,4 @@ This schema can have the following attributes:
     * ``value``: A default value for this parameter. If this property is defined, when the user selects an item from the autocomplete list, it will be displayed instead of the name of the parameter.
 
 ## How to add them to be loaded?
-Finally, you'd add them in extension.ts, under the ``symbols`` constant:
-```typescript
-const symbols = {
-	"Account": require("./symbols/accounts.json"),
-    "Player": require("./symbols/player.json"),
-    "yourNewClass": require("./symbols/yourJsonFile.json")
-};
-```
+Finally, you'd add them in generated.json.
