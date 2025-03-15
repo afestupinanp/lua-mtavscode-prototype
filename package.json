@@ -1,7 +1,7 @@
 {
 	"name": "lua-mtavscode",
 	"displayName": "lua-mtavscode",
-	"description": "A VSCode extension that enables IntelliSense and various other elements to your current Lua LSP.",
+	"description": "A VSCode extension that enables suggestions and various other elements for the Multi Theft Auto San Andreas multiplayer mod to your current Lua LSP.",
 	"version": "0.2.0",
 	"engines": {
 		"vscode": "^1.96.0"
@@ -70,9 +70,7 @@
 		"glob": "^7.1.6",
 		"mocha": "^11.0.1",
 		"typescript": "^3.8.3",
-		"vscode-test": "^1.3.0"
-	},
-	"dependencies": {
+		"vscode-test": "^1.3.0",
 		"jsdom": "^25.0.1",
 		"turndown": "^7.2.0"
 	}
