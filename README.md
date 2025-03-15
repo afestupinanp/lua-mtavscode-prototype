@@ -1,5 +1,7 @@
 # lua-mtavscode (prototype)
 
+[![Build](https://github.com/afestupinanp/lua-mtavscode-prototype/actions/workflows/build.yml/badge.svg)](https://github.com/afestupinanp/lua-mtavscode-prototype/actions/workflows/build.yml)
+
 lua-mtavscode is an extension for Visual Studio Code editor to add IntelliSense support, snippets, commands and more for the [Multi Theft Auto San Andreas](https://mtasa.com) modification.
 
 ## Features

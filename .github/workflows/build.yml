@@ -1,4 +1,4 @@
-name: Build and deploy
+name: Build extension
 
 on:
   push:
@@ -34,9 +34,14 @@ jobs:
 
       - name: Generate VSCode extension file
         working-directory: .
-        run: npm run package
+        run: |
+          mkdir bin
+          npm run package -o ./bin
 
       - name: Upload artifacts
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          path: ./out
+          name: results
+          path: |
+            ./out
+            ./bin
