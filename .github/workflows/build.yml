@@ -36,7 +36,7 @@ jobs:
         working-directory: .
         run: |
           mkdir bin
-          npm run package -o ./bin
+          npm run package --out ./bin/extension.vsix
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
