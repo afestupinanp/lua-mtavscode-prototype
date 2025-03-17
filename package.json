@@ -18,6 +18,12 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"commands": [
+			{
+				"command": "lua-mtavscode.scaffold-project",
+				"title": "Lua MTAVScode: Scaffold a new resource"
+			}
+		],
 		"configuration": {
 			"title": "lua-mtavscode",
 			"properties": {
@@ -58,7 +64,7 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"test": "node ./out/test/runTest.js",
-		"generate": "node generatesymbols.js",
+		"generate": "node scripts/generate.js",
 		"package": "vsce package",
 		"publish": "vsce publish"
 	},
@@ -69,13 +75,13 @@
 		"@types/vscode": "^1.96.0",
 		"@typescript-eslint/eslint-plugin": "^8.26.1",
 		"@typescript-eslint/parser": "^8.26.1",
+		"@vscode/vsce": "^3.2.2",
 		"eslint": "^9.22.0",
 		"glob": "^11.0.1",
 		"jsdom": "^26.0.0",
 		"mocha": "^11.1.0",
 		"turndown": "^7.2.0",
 		"typescript": "^5.8.2",
-		"vscode-test": "^1.6.1",
-		"@vscode/vsce": "^3.2.2"
+		"vscode-test": "^1.6.1"
 	}
 }

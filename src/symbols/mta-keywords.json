@@ -4,5 +4,6 @@
     "resource": "Available: shared\n\nThis MTA keyword has the same value as the getThisResource function.",
     "exports": "Available: shared\n\nTable that contains the exported functions from other resources.",
     "guiRoot": "Available: client\n\nThis MTA keyword used in the clientside has the same value as the getResourceGUIElement function, obtaining the element from the current resource.",
-    "localPlayer": "Available: client\n\nThis MTA keyword used in the clientside has the same value as the getLocalPlayer function."
+    "localPlayer": "Available: client\n\nThis MTA keyword used in the clientside has the same value as the getLocalPlayer function.",
+    "source": "Available: shared (event only)\n\nThis MTA keyword is used inside event handlers to get access to the element which triggered the event."
 }

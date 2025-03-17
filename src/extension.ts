@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { MTAClass } from './classes/MTAClass';
 import { MTASymbol } from './classes/MTASymbol';
 import Utils from './Utils';
-import { CONFIG_CLIENT_KEYWORDS, CONFIG_KEYWORD, CONFIG_SERVER_KEYWORDS } from './constants';
+import { CLIENT_LUA_FILE, CONFIG_CLIENT_KEYWORDS, CONFIG_KEYWORD, CONFIG_SERVER_KEYWORDS, META_XML_FILE, SERVER_LUA_FILE } from './constants';
 import SymbolType from './enums/SymbolType';
 import Scriptside from './enums/Scriptside';
 
@@ -110,6 +110,65 @@ export function activate(context: vscode.ExtensionContext) {
 		let document: vscode.TextDocument = textEditor.document;
 		getFileSide(document);
 	}
+
+	context.subscriptions.push(vscode.commands.registerCommand(`${CONFIG_KEYWORD}.scaffold-project`, handleScaffoldProject));
+}
+
+/**
+ * This method handles the project creation.
+ * @returns 
+ */
+function handleScaffoldProject(): void {
+	const workspaces: readonly vscode.WorkspaceFolder[]|undefined = vscode.workspace.workspaceFolders ?? [];
+	if (!workspaces.length) {
+		vscode.window.showErrorMessage("Creating a new project requires that you at least have one workspace/folder open.");
+		return;
+	}
+
+	vscode.window.showWorkspaceFolderPick({ignoreFocusOut: true}).then((selectedWorkspace: vscode.WorkspaceFolder|undefined) => {
+		let realWorkspace: vscode.WorkspaceFolder;
+		if (!selectedWorkspace) {
+			realWorkspace = workspaces[0];
+		} else {
+			realWorkspace = selectedWorkspace;
+		}
+		vscode.window.showInputBox({title: "Type the new name of the resource you want to create."}).then((name: string|undefined) => {
+			vscode.window.showInputBox({title: "Type the description of the resource"}).then((description: string|undefined) => {
+				vscode.window.showInputBox({title: "Type the author of the resource"}).then((author: string|undefined) => {
+					vscode.window.showQuickPick(['gamemode', 'script', 'map', 'misc'], {title: "Select the resource type", canPickMany: false}).then((resourceType: string|undefined) => {
+						vscode.window.showQuickPick(['Yes', 'No'], {title: "Do you want to create a git repo for this?", canPickMany: false}).then((createRepo: string|undefined) => {
+							const createGitRepo: boolean = createRepo == 'No' || !createRepo ? false : true;
+							let metaFile: string = META_XML_FILE;
+							metaFile = metaFile.replace('{author}', author);
+							metaFile = metaFile.replace('{description}', description);
+							metaFile = metaFile.replace('{name}', name);
+							metaFile = metaFile.replace('{resourceType}', resourceType);
+							
+							const serverFile: string = SERVER_LUA_FILE;
+							const clientFile: string = CLIENT_LUA_FILE;
+
+							const textEncoder = new TextEncoder();
+
+							vscode.workspace.fs.writeFile(vscode.Uri.joinPath(selectedWorkspace.uri, 'meta.xml'), textEncoder.encode(metaFile));
+							vscode.workspace.fs.writeFile(vscode.Uri.joinPath(selectedWorkspace.uri, 'server.lua'), textEncoder.encode(serverFile));
+							vscode.workspace.fs.writeFile(vscode.Uri.joinPath(selectedWorkspace.uri, 'client.lua'), textEncoder.encode(clientFile));
+
+							if (createGitRepo) {
+								const extensionContext = vscode.extensions.getExtension('vscode.git');
+								if (!extensionContext) {
+									vscode.window.showErrorMessage("Cannot initialize git repo: extension not available. (is git installed in your system?)");
+									return;
+								}
+								extensionContext.exports.getAPI(1).init(selectedWorkspace.uri);
+							}
+						});
+						
+					});
+				});
+			});
+	
+		});
+	});
 }
 
 /**
@@ -260,6 +319,8 @@ function createCompletionItem(mtaSymbol: MTASymbol): vscode.CompletionItem|undef
 	}
 	return completionItem;
 }
+
+
 
 /**
  * Method called when the extension deactivates.

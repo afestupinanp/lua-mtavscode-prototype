@@ -103,7 +103,7 @@ export class MTASymbol {
 
         if (this.type === SymbolType.METHOD) {
             signature = `${signature}${this.name}(${paramString})\`\`\``;
-        } else if (this.sourceElement && this.type === "event") {
+        } else if (this.sourceElement && this.type === SymbolType.EVENT) {
             signature = `${signature}addEventHandler("${this.name}", ${this.sourceElement}, function(${paramString}))\`\`\`\n\n**Event source:** ${this.sourceElement} element.\n\n`;
         }
 
@@ -266,7 +266,7 @@ export class MTASymbol {
      * @returns This method should return a string that is Markdown-ready.
      */
     private generateDocumentationString(): string {
-        let mtaWiki: string = `[Full MTA Wiki reference:](${this.mtaWiki})`;
+        let mtaWiki: string = `[MTA Wiki description:](${this.mtaWiki})`;
         let description: string = this.description?.length ? `**${mtaWiki}**\n\n${this.description}` : '';
         let oopSegment: string = "";
         let deprecationWarning: string = "";
@@ -288,7 +288,7 @@ export class MTASymbol {
         }
 
         // verify that is an event to add the cancellable segment.
-        if (this.type === "event") {
+        if (this.type === SymbolType.EVENT) {
             cancellableSegment = (this.isCancellable) ? "Yes." : "No.";
             cancellableSegment = `**Cancellable:** ${cancellableSegment}\n\n`;
         }

@@ -21,7 +21,6 @@ export default class Utils {
     public static loadJsonFile(path: string) {
         try {
             const generatedPath: string = `${__dirname}/${path}`;
-            console.log(generatedPath);
             const data: string = readFileSync(generatedPath, 'utf8');
             return JSON.parse(data);
         } catch (error) {
