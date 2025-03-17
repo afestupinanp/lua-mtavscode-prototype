@@ -2,7 +2,7 @@
 	"name": "lua-mtavscode",
 	"displayName": "lua-mtavscode",
 	"description": "A VSCode extension that enables suggestions and various other elements for the Multi Theft Auto San Andreas multiplayer mod to your current Lua LSP.",
-	"version": "0.2.0",
+	"version": "0.4.0",
 	"engines": {
 		"vscode": "^1.96.0"
 	},
