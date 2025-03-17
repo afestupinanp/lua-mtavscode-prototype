@@ -165,7 +165,7 @@ function registerStructuredProviders(context: vscode.ExtensionContext) {
 			// Create a completionItems list.
 			let completionItems: vscode.CompletionList = new vscode.CompletionList();
 
-			let symbols = Object.entries(globalSymbolList).filter(([_name, symbol]) => symbol.type === SymbolType.METHOD && symbol.scriptSide === scriptSide);
+			let symbols = Object.entries(globalSymbolList).filter(([_name, symbol]) => symbol.type === SymbolType.METHOD && symbol.scriptSide === scriptSide || symbol.scriptSide == Scriptside.SHARED);
 			symbols.forEach(([_name, symbol]) => {
 				let completionItem: any = createCompletionItem(symbol as MTASymbol);
 				if (completionItem) {

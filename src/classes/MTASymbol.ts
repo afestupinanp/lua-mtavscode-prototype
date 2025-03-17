@@ -176,33 +176,39 @@ export class MTASymbol {
         let paramAmount: number = usableParameters.length - 1;
         let cursorPosition: number = 1;
         let usableLength: number = usableParameters.length;
-        usableParameters.forEach((parameter: {name: string, type: string, value?: string}, _: number) => {
-            let comma: string = ", ";
-            // check current cursor position, and compare it to the params length
-            // so we know when to stop adding parameters, and set the final cursor.
-            if (cursorPosition === usableLength) {
-                comma = "";
-                cursorPosition = 0;
-            }
-            let param: string = `${parameter.name}`;
 
-            if (this.type === SymbolType.METHOD || (this.type === SymbolType.EVENT && !snippetApplicable)) {
-                param = `${parameter.type} ${parameter.name}`;
-            }
-            
-            // check for default values, so they can be seen in the documentation string!
-            if (parameter.value) {
-                param = `${param} = ${parameter.value}`;
-            }
+        if (!usableLength) {
+            paramString = 'No parameters.';
+        } else {
+            usableParameters.forEach((parameter: {name: string, type: string, value?: string}, _: number) => {
+                let comma: string = ", ";
+                // check current cursor position, and compare it to the params length
+                // so we know when to stop adding parameters, and set the final cursor.
+                if (cursorPosition === usableLength) {
+                    comma = "";
+                    cursorPosition = 0;
+                }
+                let param: string = `${parameter.name}`;
+    
+                if (this.type === SymbolType.METHOD || (this.type === SymbolType.EVENT && !snippetApplicable)) {
+                    param = `${parameter.type} ${parameter.name}`;
+                }
+                
+                // check for default values, so they can be seen in the documentation string!
+                if (parameter.value) {
+                    param = `${param} = ${parameter.value}`;
+                }
+    
+                if (snippetApplicable && this.type === SymbolType.METHOD) {
+                    param = `\$\{${cursorPosition}:${param}\}`;
+                }
+    
+                param = `${param}${comma}`;
+                paramString = `${paramString}${param}`;
+                cursorPosition++;
+            });
+        }
 
-            if (snippetApplicable && this.type === SymbolType.METHOD) {
-                param = `\$\{${cursorPosition}:${param}\}`;
-            }
-
-            param = `${param}${comma}`;
-            paramString = `${paramString}${param}`;
-            cursorPosition++;
-        });
 
         return paramString;
     }
